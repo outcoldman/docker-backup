@@ -1,0 +1,8 @@
+#!/bin/sh
+
+backup_time="$(date -I)"
+backup_root=/var/tmp/backup.${backup_time}/
+mkdir -p "${backup_root}/src"
+find ${BACKUP_FIND_OPTIONS} -print -exec cp -fR --parents {} "${backup_root}/src" \;
+(cd "${backup_root}/src" && tar -cvzf "${backup_root}/${BACKUP_NAME}.${backup_time}.tar.gz" .)
+
