@@ -1,8 +1,38 @@
 #!/bin/sh
 
-backup_time="$(date -I)"
-backup_root=/var/tmp/backup.${backup_time}/
-mkdir -p "${backup_root}/src"
-find ${BACKUP_FIND_OPTIONS} -print -exec cp -fR --parents {} "${backup_root}/src" \;
-(cd "${backup_root}/src" && tar -cvzf "${backup_root}/${BACKUP_NAME}.${backup_time}.tar.gz" .)
+set -e
+
+BACKUP_PREFIX=${BACKUP_PREFIX:-backup}
+BACKUP_DEST_FOLDER=${BACKUP_DEST_FOLDER:-/var/tmp/}
+BACKUP_FIND_OPTIONS=${BACKUP_FIND_OPTIONS:?"BACKUP_FIND_OPTIONS are required"}
+BACKUP_DELETE_LOCAL_COPY=${BACKUP_DELETE_LOCAL_COPY:-true}
+
+BACKUP_AWS_KEY=${BACKUP_AWS_KEY:-}
+BACKUP_AWS_SECRET=${BACKUP_AWS_SECRET:-}
+BACKUP_AWS_S3_PATH=${BACKUP_AWS_S3_PATH:-}
+
+# prepare unique name with date like 2015-09-04T03-40-34UTC
+backup_time="$(date -uIseconds | sed 's/:/-/g')"
+backup_src=${BACKUP_DEST_FOLDER}/src.${backup_time}
+backup_archive=${BACKUP_DEST_FOLDER}/${BACKUP_PREFIX}.${backup_time}.tar.gz
+# copy all filtes we want to backup to src
+find ${BACKUP_FIND_OPTIONS} -print > "${backup_src}"
+# time to create an archive
+tar -cvz \
+    -f "${backup_archive}" \
+    -T "${backup_src}"
+# remove src file
+rm "${backup_src}"
+# upload to amazon s3
+if [[ ${BACKUP_AWS_S3_PATH} ]]; then
+    s3cmd \
+        --access_key="${BACKUP_AWS_KEY:?'BACKUP_AWS_KEY is required'}" \
+        --secret_key="${BACKUP_AWS_SECRET:?'BACKUP_AWS_SECRET is required'}" \
+        put "${backup_archive}" \
+        "${BACKUP_AWS_S3_PATH}"
+fi
+# remove backup file
+if ${BACKUP_DELETE_LOCAL_COPY}; then
+    rm "${backup_archive}"
+fi
 
