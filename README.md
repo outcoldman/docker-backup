@@ -130,8 +130,6 @@ splunk:
   image: outcoldman/splunk:latest
   volumes_from:
     - vsplunk
-  ports:
-    - '8000:8000'
   restart: always
 
 splunkbackup:
@@ -144,5 +142,33 @@ splunkbackup:
     - BACKUP_FIND_OPTIONS=/opt/splunk/etc \( -path "/opt/splunk/etc/apps/search/*" -a ! -path "/opt/splunk/etc/apps/search/default*" \) -o \( -path "/opt/splunk/etc/system/*" -a ! -path "/opt/splunk/etc/system/default*" \)
   volumes_from:
     - vsplunk
+  restart: always
+```
+
+### Backing up Jenkins
+
+```
+vdata:
+  image: busybox
+  volumes:
+    - /var/jenkins_home
+  command: chown -R 1000:1000 /var/jenkins_home
+
+jenkins:
+  build: jenkins:latest
+  volumes_from:
+    - vdata
+  restart: always
+
+backup:
+  image: outcoldman/backup:latest
+  environment:
+    - BACKUP_PREFIX=jenkins
+    - BACKUP_AWS_KEY=AWS_KEY
+    - BACKUP_AWS_SECRET=AWS_SECRET
+    - BACKUP_AWS_S3_PATH=s3://my-backup-backet
+    - BACKUP_FIND_OPTIONS=/var/jenkins_home/ -path "/var/jenkins_home/.ssh/*" -o -path "/var/jenkins_home/plugins/*.jpi" -o -path "/var/jenkins_home/users/*" -o -path "/var/jenkins_home/secrets/*" -o -path "/var/jenkins_home/jobs/*" -o -regex "/var/jenkins_home/[^/]*.xml" -o -regex "/var/jenkins_home/secret.[^/]*"
+  volumes_from:
+    - vdata
   restart: always
 ```
