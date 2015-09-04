@@ -104,7 +104,7 @@ docker run -d \
     destination folder which is used to create backup archives. Default
     value is `/var/tmp`
 - `BACKUP_DELETE_LOCAL_COPY` - if you want to keep backups in
-    `BCAKUP_DEST_FOLDER` set it to `true`. Default value is `false`.
+    `BACKUP_DEST_FOLDER` set it to `true`. Default value is `true`.
 - `BACKUP_FIND_OPTIONS` - this image is using `find` to select files you want
     to backup. See [man find](https://www.freebsd.org/cgi/man.cgi?query=find(1)&sektion=).
 - `BACKUP_AWS_KEY` - AWS Key.

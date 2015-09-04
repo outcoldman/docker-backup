@@ -16,7 +16,7 @@ backup_time="$(date -uIseconds | sed 's/:/-/g')"
 backup_src=${BACKUP_DEST_FOLDER}/src.${backup_time}
 backup_archive=${BACKUP_DEST_FOLDER}/${BACKUP_PREFIX}.${backup_time}.tar.gz
 # copy all filtes we want to backup to src
-find ${BACKUP_FIND_OPTIONS} -print > "${backup_src}"
+eval $(echo find ${BACKUP_FIND_OPTIONS} -print) > "${backup_src}"
 # time to create an archive
 tar -cvz \
     -f "${backup_archive}" \
