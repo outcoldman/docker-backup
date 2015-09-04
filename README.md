@@ -111,3 +111,38 @@ docker run -d \
 - `BACKUP_AWS_SECRET` - AWS Secret.
 - `BACKUP_AWS_S3_PATH` - path to S3 backet, like `s3://your-backup-us-west-2`.
     Default value is empty, which means that archives will not be uploaded.
+
+## Examples
+
+### Backing up Splunk `etc` folder
+
+My `docker-compose.yml` part for backing up `Splunk Light` settings, including
+system no default settings and search non default settings
+
+```
+vsplunk:
+  image: busybox
+  volumes:
+    - /opt/splunk/etc
+    - /opt/splunk/var
+
+splunk:
+  image: outcoldman/splunk:latest
+  volumes_from:
+    - vsplunk
+  ports:
+    - '8000:8000'
+  restart: always
+
+splunkbackup:
+  image: outcoldman/backup:latest
+  environment:
+    - BACKUP_PREFIX=splunk-etc
+    - BACKUP_AWS_KEY=AWS_KEY
+    - BACKUP_AWS_SECRET=AWS_SECRET
+    - BACKUP_AWS_S3_PATH=s3://my-backup-backet
+    - BACKUP_FIND_OPTIONS=/opt/splunk/etc \( -path "/opt/splunk/etc/apps/search/*" -a ! -path "/opt/splunk/etc/apps/search/default*" \) -o \( -path "/opt/splunk/etc/system/*" -a ! -path "/opt/splunk/etc/system/default*" \)
+  volumes_from:
+    - vsplunk
+  restart: always
+```
