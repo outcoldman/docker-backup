@@ -98,8 +98,8 @@ docker run -d \
 ## Configuration
 
 - `BACKUP_PREFIX` - prefix for the backup archives in format
-    `${BACKUP_PREFIX}.$(date -uIseconds | sed 's/:/-/g').tar.gz`, for example
-    `my_etc.2015-09-04T05-28-55UTC.tar.gz`. Default value is `backup`.
+    `${BACKUP_PREFIX}.$(date -Iseconds | sed 's/:/-/g').tar.gz`, for example
+    `my_etc.2015-09-04T05-28-55+0000.tar.gz`. Default value is `backup`.
 - `BACKUP_DEST_FOLDER` - if you want to keep backups locally you can change
     destination folder which is used to create backup archives. Default
     value is `/var/tmp`
@@ -111,6 +111,11 @@ docker run -d \
 - `BACKUP_AWS_SECRET` - AWS Secret.
 - `BACKUP_AWS_S3_PATH` - path to S3 backet, like `s3://your-backup-us-west-2`.
     Default value is empty, which means that archives will not be uploaded.
+- `BACKUP_TIMEZONE` - change timezone from UTC to
+    [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones),
+    for example `America/Los_Angeles`. Defaults to empty.
+- `BACKUP_CRON_SCHEDULE` - specify when and how often you want to run backup
+    script. Defaults to `0 2 * * *` (every day at 2am).
 
 ## Examples
 

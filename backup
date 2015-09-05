@@ -12,7 +12,7 @@ BACKUP_AWS_SECRET=${BACKUP_AWS_SECRET:-}
 BACKUP_AWS_S3_PATH=${BACKUP_AWS_S3_PATH:-}
 
 # prepare unique name with date like 2015-09-04T03-40-34UTC
-backup_time="$(date -uIseconds | sed 's/:/-/g')"
+backup_time="$(date -Iseconds | sed 's/:/-/g')"
 backup_src=${BACKUP_DEST_FOLDER}/src.${backup_time}
 backup_archive=${BACKUP_DEST_FOLDER}/${BACKUP_PREFIX}.${backup_time}.tar.gz
 # copy all filtes we want to backup to src
