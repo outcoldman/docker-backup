@@ -39,8 +39,8 @@ docker build --tag="$USER/backup" .
 ## Quick start
 
 At first if you want to upload backups to AWS S3 you need to create new
-backet on S3 and create an user in IAM with next policy (don't forget to
-update backet locations)
+bucket on S3 and create an user in IAM with next policy (don't forget to
+update bucket locations)
 
 ```xml
 {
@@ -109,7 +109,7 @@ docker run -d \
     to backup. See [man find](https://www.freebsd.org/cgi/man.cgi?query=find(1)&sektion=).
 - `BACKUP_AWS_KEY` - AWS Key.
 - `BACKUP_AWS_SECRET` - AWS Secret.
-- `BACKUP_AWS_S3_PATH` - path to S3 backet, like `s3://your-backup-us-west-2`.
+- `BACKUP_AWS_S3_PATH` - path to S3 bucket, like `s3://your-backup-us-west-2`.
     Default value is empty, which means that archives will not be uploaded.
 - `BACKUP_TIMEZONE` - change timezone from UTC to
     [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones),
@@ -143,7 +143,7 @@ splunkbackup:
     - BACKUP_PREFIX=splunk-etc
     - BACKUP_AWS_KEY=AWS_KEY
     - BACKUP_AWS_SECRET=AWS_SECRET
-    - BACKUP_AWS_S3_PATH=s3://my-backup-backet
+    - BACKUP_AWS_S3_PATH=s3://my-backup-bucket
     - BACKUP_FIND_OPTIONS=/opt/splunk/etc \( -path "/opt/splunk/etc/apps/search/*" -a ! -path "/opt/splunk/etc/apps/search/default*" \) -o \( -path "/opt/splunk/etc/system/*" -a ! -path "/opt/splunk/etc/system/default*" \)
   volumes_from:
     - vsplunk
@@ -171,7 +171,7 @@ backup:
     - BACKUP_PREFIX=jenkins
     - BACKUP_AWS_KEY=AWS_KEY
     - BACKUP_AWS_SECRET=AWS_SECRET
-    - BACKUP_AWS_S3_PATH=s3://my-backup-backet
+    - BACKUP_AWS_S3_PATH=s3://my-backup-bucket
     - BACKUP_FIND_OPTIONS=/var/jenkins_home/ -path "/var/jenkins_home/.ssh/*" -o -path "/var/jenkins_home/plugins/*.jpi" -o -path "/var/jenkins_home/users/*" -o -path "/var/jenkins_home/secrets/*" -o -path "/var/jenkins_home/jobs/*" -o -regex "/var/jenkins_home/[^/]*.xml" -o -regex "/var/jenkins_home/secret.[^/]*"
   volumes_from:
     - vdata
