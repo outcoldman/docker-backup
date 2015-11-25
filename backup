@@ -11,6 +11,21 @@ BACKUP_AWS_KEY=${BACKUP_AWS_KEY:-}
 BACKUP_AWS_SECRET=${BACKUP_AWS_SECRET:-}
 BACKUP_AWS_S3_PATH=${BACKUP_AWS_S3_PATH:-}
 
+if [[ ! ${BACKUP_AWS_KEY} ]]; then
+	echo BACKUP_AWS_KEY is required
+	exit 1
+fi
+
+if [[ ! ${BACKUP_AWS_SECRET} ]]; then
+	echo BACKUP_AWS_SECRET is required
+	exit 1
+fi
+
+if [[ ! ${BACKUP_AWS_S3_PATH} ]]; then
+	echo BACKUP_AWS_S3_PATH is required
+	exit 1
+fi
+
 # prepare unique name with date like 2015-09-04T03-40-34UTC
 backup_time="$(date -Iseconds | sed 's/:/-/g')"
 backup_src=${BACKUP_DEST_FOLDER}/src.${backup_time}
@@ -24,10 +39,13 @@ tar -cvz \
 # remove src file
 rm "${backup_src}"
 # upload to amazon s3
+
+echo "[default]" > ~/.s3cfg
+echo "access_key = ${BACKUP_AWS_KEY}" >> ~/.s3cfg
+echo "secret_key = ${BACKUP_AWS_SECRET}" >> ~/.s3cfg
+ 
 if [[ ${BACKUP_AWS_S3_PATH} ]]; then
-    s3cmd \
-        --access_key="${BACKUP_AWS_KEY:?'BACKUP_AWS_KEY is required'}" \
-        --secret_key="${BACKUP_AWS_SECRET:?'BACKUP_AWS_SECRET is required'}" \
+    s3-cli \
         put "${backup_archive}" \
         "${BACKUP_AWS_S3_PATH}"
 fi
