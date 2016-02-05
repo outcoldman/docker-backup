@@ -1,0 +1,17 @@
+vdata:
+  image: busybox
+  volumes:
+    - /somedata
+  command: touch /somedata/testfile && echo "added test data"
+
+backup:
+  image: triply/backup
+  restart: unless-stopped
+  environment:
+    - BACKUP_PREFIX=somedata
+    - BACKUP_AWS_KEY=AWS_KEY
+    - BACKUP_AWS_SECRET=AWS_SECRET
+    - BACKUP_AWS_S3_PATH=s3://my-backup-bucket
+    - BACKUP_FIND_OPTIONS=/somedata
+  volumes_from:
+    - vdata
