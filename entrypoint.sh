@@ -1,6 +1,13 @@
 #!/bin/sh
 
 set +e
+echoerr() { echo "$@" 1>&2; }
+
+#validate config first
+[ -z ${BACKUP_FIND_OPTIONS} ] && echoerr "BACKUP_FIND_OPTIONS are required" && exit 1;
+[ -z ${BACKUP_AWS_KEY} ] && echoerr "BACKUP_AWS_KEY is required" && exit 1;
+[ -z ${BACKUP_AWS_SECRET} ] && echoerr "BACKUP_AWS_SECRET is required" && exit 1;
+[ -z ${BACKUP_AWS_S3_PATH} ] && echoerr "BACKUP_AWS_S3_PATH is required" && exit 1;
 
 if [[ ${BACKUP_TIMEZONE} ]]; then
   # See http://wiki.alpinelinux.org/wiki/Setting_the_timezone
