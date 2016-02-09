@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --update-cache python py-pip ca-certificates tzdata \
+RUN apk add --update-cache python py-pip ca-certificates tzdata ssmtp \
     && pip install s3cmd \
     && rm -fR /etc/periodic \
     && rm -rf /var/cache/apk/*
