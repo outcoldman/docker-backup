@@ -1,0 +1,21 @@
+#!/bin/sh
+set +x
+
+
+MAIL_SUBJECT_HEADER=${MAIL_SUBJECT_HEADER:-`hostname`}
+MAIL_FROM_NAME=${MAIL_FROM_NAME:-"docker-backup"}
+MAIL_FROM=${MAIL_FROM:-"docker-backup@example.com"}
+/usr/local/bin/backup > /var/log/backup.log 2> /var/log/backup.err
+status="$?"
+
+
+
+if [[ "${status}" = 0 ]]; then
+  if [ -n ${MAILTO_ON_SUCCESS} ]; then
+    subject="[${MAIL_SUBJECT_HEADER}] Backup Finished"
+    echo -e "Subject: ${subject}\nTo: ${MAILTO_ON_SUCCESS}\n\nBackup finished at $(date) on $(hostname). See below for the log: \n\n" | cat - /var/log/backup.log | sendmail -F "${MAIL_FROM_NAME}" -f ${MAIL_FROM} ${MAILTO_ON_SUCCESS}
+  fi
+elif [ -n ${MAILTO_ON_FAIL} ]; then
+  subject="[${MAIL_SUBJECT_HEADER}] Backup Failed"
+  echo -e "Subject: ${subject}\nTo: ${MAILTO_ON_FAIL}\n\nBackup failed with exit code ${status} at $(date) on $(hostname). See below for the log: \n\n" | cat - /var/log/backup.log | sendmail -F "${MAIL_FROM_NAME}" -f ${MAIL_FROM} ${MAILTO_ON_FAIL}
+fi

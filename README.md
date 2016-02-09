@@ -117,6 +117,24 @@ docker run -d \
 - `BACKUP_CRON_SCHEDULE` - specify when and how often you want to run backup
     script. Defaults to `0 2 * * *` (every day at 2am).
 
+To enable email notifications, use the following settings:
+
+ - `SMTP_ENABLED` - Enable sending via SMTP. Defaults to `false`
+ - `SMTP_SERVER_HOST` - The server to send the mail to. Defaults to `smtp.gmail.com`
+ - `SMTP_SERVER_PORT` - The port to use on the `SMTP_SERVER_HOST`. Defaults to `587`
+ - `SMTP_REWRITE_DOMAIN` - The domain from which this email seems to come, used for user authentication. Defaults to `gmail.com`
+ - `SMTP_HOSTNAME` - The full hostname. If not specified, the host is queried for its hostname
+ - `SMTP_TLS` - Specifies whether SSMTP uses TLS to talke to the SMTP server. Defaults to `true`
+ - `SMTP_START_TLS` - Specifies wheter SSMTP does a `EHLO/STARTTLS` before stating SSL negotiation. Defaults to `true`
+ - `SMTP_USERNAME` - Username to authenticate with. Unset by default.
+ - `SMTP_PASSWORD` - Password to authenticate with. Unset by default
+ - `MAILTO_ON_SUCCESS` - Email address to mail on backup success. Leave blank (default) to disable emails on success.
+ - `MAILTO_ON_FAIL` - Email address to mail on backup failure. Leave blank (default) to disable emails on failure.
+ - `MAIL_FROM` - The email address that notifications are send from. Defaults to `docker-backup@example.com`
+ - `MAIL_FROM_NAME` - The name of the email address. Defaults to `docker-backup`
+ - `MAIL_SUBJECT_HEADER` - The header to prepend to the notification email subject. Defaults to the machine hostname
+
+
 ## Examples
 
 ### Backing up Splunk `etc` folder

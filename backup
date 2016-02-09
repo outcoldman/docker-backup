@@ -4,12 +4,8 @@ set -e
 
 BACKUP_PREFIX=${BACKUP_PREFIX:-backup}
 BACKUP_DEST_FOLDER=${BACKUP_DEST_FOLDER:-/var/tmp/}
-BACKUP_FIND_OPTIONS=${BACKUP_FIND_OPTIONS:?"BACKUP_FIND_OPTIONS are required"}
 BACKUP_DELETE_LOCAL_COPY=${BACKUP_DELETE_LOCAL_COPY:-true}
 
-BACKUP_AWS_KEY=${BACKUP_AWS_KEY:-}
-BACKUP_AWS_SECRET=${BACKUP_AWS_SECRET:-}
-BACKUP_AWS_S3_PATH=${BACKUP_AWS_S3_PATH:-}
 
 # prepare unique name with date like 2015-09-04T03-40-34UTC
 backup_time="$(date -Iseconds | sed 's/:/-/g')"
@@ -24,15 +20,12 @@ tar -cvz \
 # remove src file
 rm "${backup_src}"
 # upload to amazon s3
-if [[ ${BACKUP_AWS_S3_PATH} ]]; then
-    s3cmd \
-        --access_key="${BACKUP_AWS_KEY:?'BACKUP_AWS_KEY is required'}" \
-        --secret_key="${BACKUP_AWS_SECRET:?'BACKUP_AWS_SECRET is required'}" \
-        put "${backup_archive}" \
-        "${BACKUP_AWS_S3_PATH}"
-fi
+s3cmd \
+    --access_key="${BACKUP_AWS_KEY}" \
+    --secret_key="${BACKUP_AWS_SECRET}" \
+    put "${backup_archive}" \
+    "${BACKUP_AWS_S3_PATH}"
 # remove backup file
 if ${BACKUP_DELETE_LOCAL_COPY}; then
     rm "${backup_archive}"
 fi
-
