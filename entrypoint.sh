@@ -14,4 +14,4 @@ BACKUP_CRON_SCHEDULE=${BACKUP_CRON_SCHEDULE:-"0 2 * * *"}
 echo "${BACKUP_CRON_SCHEDULE} /usr/local/bin/backup" > /etc/crontabs/root
 
 # Starting cron
-crond -f -d 0
+crond -f
